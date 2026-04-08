@@ -1,0 +1,9 @@
+{
+  "name": "prompt-sentiment-analyzer",
+  "version": "0.1.0",
+  "description": "Captures and analyzes sentiment of user prompts and system context from Claude Code sessions in real-time",
+  "author": {
+    "name": "Anthropic",
+    "email": "support@anthropic.com"
+  }
+}
