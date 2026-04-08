@@ -6,11 +6,9 @@ A Claude Code plugin that captures and analyzes the sentiment of your prompts in
 
 ### From GitHub (recommended)
 
-Replace `<your-github-username>/<your-repo>` with your actual repository path:
-
 ```bash
 # 1. Add the marketplace from your GitHub repo
-claude plugin marketplace add <your-github-username>/<your-repo>
+claude plugin marketplace add RBDurgin/prompt-sentiment-analyzer
 
 # 2. Install the plugin
 claude plugin install prompt-sentiment-analyzer
@@ -33,7 +31,7 @@ claude --plugin-dir /path/to/cloned/repo/plugins/prompt-sentiment-analyzer
 claude plugin uninstall prompt-sentiment-analyzer
 
 # Optionally remove the marketplace if you no longer need other plugins from it
-claude plugin marketplace remove <your-github-username>/<your-repo>
+claude plugin marketplace remove RBDurgin/prompt-sentiment-analyzer
 ```
 
 Uninstalling removes the hooks and commands but does **not** delete your existing session logs. To remove those:
