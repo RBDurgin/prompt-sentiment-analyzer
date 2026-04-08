@@ -94,7 +94,7 @@ def main():
     }
 
     try:
-        with open(log_path, "a") as f:
+        with open(log_path, "a", opener=lambda p, f: os.open(p, f, 0o600)) as f:
             f.write(json.dumps(summary) + "\n")
     except IOError:
         pass

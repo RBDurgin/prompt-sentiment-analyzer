@@ -138,7 +138,7 @@ def main():
     if system_prompt:
         system_prompt_sentiment = analyze_system_prompt_sentiment(system_prompt)
 
-    os.makedirs(LOG_DIR, exist_ok=True)
+    os.makedirs(LOG_DIR, mode=0o700, exist_ok=True)
     log_path = os.path.join(LOG_DIR, f"{session_id}.jsonl")
 
     log_entry = {
@@ -156,7 +156,7 @@ def main():
     }
 
     try:
-        with open(log_path, "a") as f:
+        with open(log_path, "a", opener=lambda p, f: os.open(p, f, 0o600)) as f:
             f.write(json.dumps(log_entry) + "\n")
     except IOError:
         pass
