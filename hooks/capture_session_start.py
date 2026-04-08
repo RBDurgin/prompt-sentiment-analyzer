@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 
 
 LOG_DIR = os.path.expanduser("~/.claude/sentiment-logs")
+_SENTINEL_ENV = "CLAUDE_SENTIMENT_ANALYZING"
 
 
 def find_claude_md(cwd: str) -> str | None:
@@ -72,6 +73,7 @@ def analyze_system_prompt_sentiment(text: str) -> dict | None:
         '"primary_purpose": <one of: security|style|workflow|context|other>}\n\n'
         f"System prompt:\n{text[:2000]}"
     )
+    env = {**os.environ, _SENTINEL_ENV: "1"}
     try:
         result = subprocess.run(
             [
@@ -86,6 +88,7 @@ def analyze_system_prompt_sentiment(text: str) -> dict | None:
             capture_output=True,
             text=True,
             timeout=20,
+            env=env,
         )
         if result.returncode != 0:
             return None
@@ -115,6 +118,12 @@ def detect_project_type(cwd: str) -> str:
 
 
 def main():
+    # Prevent infinite recursion: this hook calls `claude -p`, which is itself a
+    # Claude Code session and would re-fire SessionStart. Bail out if we're
+    # already inside a sentiment analysis subprocess.
+    if os.environ.get(_SENTINEL_ENV):
+        sys.exit(0)
+
     try:
         input_data = json.load(sys.stdin)
     except (json.JSONDecodeError, EOFError):
