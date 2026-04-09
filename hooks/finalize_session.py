@@ -16,7 +16,12 @@ LOG_DIR = os.path.expanduser("~/.claude/sentiment-logs")
 
 
 def compute_trajectory(values: list[float]) -> str:
-    """Compare first half vs second half to determine trend direction."""
+    """Compare first half vs second half to determine trend direction.
+
+    Requires at least 4 data points to split into two meaningful halves;
+    shorter sessions are reported as stable rather than guessing from
+    insufficient data. A 0.15 delta threshold avoids calling noise a trend.
+    """
     if len(values) < 4:
         return "stable"
     mid = len(values) // 2
@@ -67,7 +72,7 @@ def main():
         values = [s[field] for s in sentiments if isinstance(s.get(field), (int, float))]
         return round(sum(values) / len(values), 3) if values else 0.0
 
-    frustration_values = [s.get("frustration", 0) for s in sentiments if s]
+    frustration_values = [s.get("frustration", 0) for s in sentiments]
     high_frustration_count = sum(1 for v in frustration_values if v > 0.6)
 
     dominant_emotions = Counter(
