@@ -11,6 +11,8 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 
+from utils import detect_project_type
+
 
 LOG_DIR = os.path.expanduser("~/.claude/sentiment-logs")
 _SENTINEL_ENV = "CLAUDE_SENTIMENT_ANALYZING"
@@ -103,21 +105,6 @@ def analyze_system_prompt_sentiment(text: str) -> dict | None:
     except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
         return None
 
-
-def detect_project_type(cwd: str) -> str:
-    markers = {
-        "nodejs": ["package.json"],
-        "python": ["pyproject.toml", "setup.py", "requirements.txt"],
-        "rust": ["Cargo.toml"],
-        "go": ["go.mod"],
-        "java": ["pom.xml", "build.gradle"],
-        "ruby": ["Gemfile"],
-    }
-    for project_type, files in markers.items():
-        for f in files:
-            if os.path.exists(os.path.join(cwd, f)):
-                return project_type
-    return "unknown"
 
 
 def main():
