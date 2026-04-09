@@ -4,6 +4,22 @@
 import os
 
 
+def strip_fence(text: str) -> str:
+    """Strip markdown code fences from LLM output.
+
+    Handles plain ``` and annotated ```json / ```python etc.
+    The first line (the opening fence) is always dropped; the trailing
+    ``` is stripped only if present, so partial output still parses.
+    """
+    if not text.startswith("```"):
+        return text
+    lines = text.split("\n")
+    body = "\n".join(lines[1:])
+    if body.endswith("```"):
+        body = body[:-3].rstrip()
+    return body
+
+
 def detect_project_type(cwd: str) -> str:
     markers = {
         "nodejs": ["package.json"],
