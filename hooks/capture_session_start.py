@@ -93,9 +93,12 @@ def analyze_system_prompt_sentiment(text: str) -> dict | None:
         if result.returncode != 0:
             return None
         text_out = result.stdout.strip()
+        # Strip markdown fences if present (e.g. ``` or ```json)
         if text_out.startswith("```"):
             lines = text_out.split("\n")
-            text_out = "\n".join(lines[1:-1]) if len(lines) > 2 else text_out
+            text_out = "\n".join(lines[1:])
+            if text_out.endswith("```"):
+                text_out = text_out[:-3].rstrip()
         return json.loads(text_out)
     except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
         return None
