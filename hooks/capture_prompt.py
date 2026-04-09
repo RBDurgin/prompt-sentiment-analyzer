@@ -54,10 +54,12 @@ def analyze_sentiment(prompt_text: str) -> dict:
             return None
 
         text = result.stdout.strip()
-        # Strip markdown fences if present
+        # Strip markdown fences if present (e.g. ``` or ```json)
         if text.startswith("```"):
             lines = text.split("\n")
-            text = "\n".join(lines[1:-1]) if len(lines) > 2 else text
+            text = "\n".join(lines[1:])
+            if text.endswith("```"):
+                text = text[:-3].rstrip()
         return json.loads(text)
     except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
         return None
