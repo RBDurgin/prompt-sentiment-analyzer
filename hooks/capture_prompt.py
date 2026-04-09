@@ -12,7 +12,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 
-from utils import detect_project_type
+from utils import detect_project_type, strip_fence
 
 
 LOG_DIR = os.path.expanduser("~/.claude/sentiment-logs")
@@ -55,13 +55,7 @@ def analyze_sentiment(prompt_text: str) -> dict:
         if result.returncode != 0:
             return None
 
-        text = result.stdout.strip()
-        # Strip markdown fences if present (e.g. ``` or ```json)
-        if text.startswith("```"):
-            lines = text.split("\n")
-            text = "\n".join(lines[1:])
-            if text.endswith("```"):
-                text = text[:-3].rstrip()
+        text = strip_fence(result.stdout.strip())
         return json.loads(text)
     except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
         return None
