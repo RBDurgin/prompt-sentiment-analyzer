@@ -1,0 +1,2 @@
+# Match the oldest Python version exercised in CI (see .github/workflows).
+target-version = "py310"

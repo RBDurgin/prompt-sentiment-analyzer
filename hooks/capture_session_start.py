@@ -13,7 +13,6 @@ from datetime import datetime, timezone
 
 from utils import detect_project_type, strip_fence
 
-
 LOG_DIR = os.path.expanduser("~/.claude/sentiment-logs")
 _SENTINEL_ENV = "CLAUDE_SENTIMENT_ANALYZING"
 
@@ -27,7 +26,7 @@ def find_claude_md(cwd: str) -> str | None:
             try:
                 with open(candidate) as f:
                     return f.read()
-            except IOError:
+            except OSError:
                 return None
         parent = os.path.dirname(path)
         if parent == path:
@@ -39,7 +38,7 @@ def find_claude_md(cwd: str) -> str | None:
         try:
             with open(global_candidate) as f:
                 return f.read()
-        except IOError:
+        except OSError:
             pass
     return None
 
@@ -58,7 +57,7 @@ def get_system_prompt(cwd: str) -> str | None:
                 system_prompt = settings.get("systemPrompt")
                 if system_prompt:
                     return system_prompt
-            except (json.JSONDecodeError, IOError):
+            except (OSError, json.JSONDecodeError):
                 pass
     return None
 
@@ -90,6 +89,7 @@ def analyze_system_prompt_sentiment(text: str) -> dict | None:
             capture_output=True,
             text=True,
             timeout=20,
+            check=False,
             env=env,
         )
         if result.returncode != 0:
@@ -142,7 +142,7 @@ def main():
     try:
         with open(log_path, "a", opener=lambda p, f: os.open(p, f, 0o600)) as f:
             f.write(json.dumps(log_entry) + "\n")
-    except IOError:
+    except OSError:
         pass
 
     sys.exit(0)

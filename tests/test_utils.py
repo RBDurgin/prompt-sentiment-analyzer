@@ -12,9 +12,8 @@ import unittest
 # Hooks are not a package; add the hooks directory to sys.path so imports work.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "hooks"))
 
-from utils import detect_project_type, strip_fence  # noqa: E402
-from finalize_session import compute_trajectory  # noqa: E402
-
+from finalize_session import compute_trajectory
+from utils import detect_project_type, strip_fence
 
 # ---------------------------------------------------------------------------
 # strip_fence
