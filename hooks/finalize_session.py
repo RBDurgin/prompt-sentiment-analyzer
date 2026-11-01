@@ -11,7 +11,6 @@ import sys
 from collections import Counter
 from datetime import datetime, timezone
 
-
 LOG_DIR = os.path.expanduser("~/.claude/sentiment-logs")
 
 
@@ -60,7 +59,7 @@ def main():
                         prompt_records.append(record)
                 except json.JSONDecodeError:
                     pass
-    except IOError:
+    except OSError:
         sys.exit(0)
 
     if not prompt_records:
@@ -101,7 +100,7 @@ def main():
     try:
         with open(log_path, "a", opener=lambda p, f: os.open(p, f, 0o600)) as f:
             f.write(json.dumps(summary) + "\n")
-    except IOError:
+    except OSError:
         pass
 
     sys.exit(0)

@@ -14,7 +14,6 @@ from datetime import datetime, timezone
 
 from utils import detect_project_type, strip_fence
 
-
 LOG_DIR = os.path.expanduser("~/.claude/sentiment-logs")
 _SENTINEL_ENV = "CLAUDE_SENTIMENT_ANALYZING"
 
@@ -50,6 +49,7 @@ def analyze_sentiment(prompt_text: str) -> dict:
             capture_output=True,
             text=True,
             timeout=25,
+            check=False,
             env=env,
         )
         if result.returncode != 0:
@@ -101,7 +101,7 @@ def main():
     try:
         with open(log_path, "a", opener=lambda p, f: os.open(p, f, 0o600)) as f:
             f.write(json.dumps(log_entry) + "\n")
-    except IOError:
+    except OSError:
         pass  # Never block the user due to logging failure
 
     # If frustration is very high, inject a gentle nudge into Claude's context

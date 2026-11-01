@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Shared utilities for prompt-sentiment-analyzer hooks."""
 
 import os
